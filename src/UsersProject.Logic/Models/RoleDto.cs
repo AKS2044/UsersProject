@@ -13,6 +13,6 @@
         /// <summary>
         /// Role.
         /// </summary>
-        public string?  UserRole { get; set; }
+        public string? UserRole { get; set; }
     }
 }

@@ -99,6 +99,5 @@ namespace UsersProject.WebApi.Controllers
                 return StatusCode(400, $"An error occurred while deleting a role. Error: {ex}");
             }
         }
-
     }
 }

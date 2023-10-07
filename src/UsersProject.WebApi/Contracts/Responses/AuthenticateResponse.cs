@@ -7,7 +7,7 @@ namespace UsersProject.WebApi.Contracts.Responses
     /// <summary>
     /// User authenticate response.
     /// </summary>
-    public class AuthenticateResponse: UserModel
+    public class AuthenticateResponse : UserModel
     {
         /// <summary>
         /// Constructor with params.

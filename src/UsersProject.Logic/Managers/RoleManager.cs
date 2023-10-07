@@ -11,6 +11,7 @@ namespace UsersProject.Logic.Managers
     {
         private readonly IRepositoryManager<Role> _roleRepository;
         private readonly ILogger _logger;
+
         public RoleManager(IRepositoryManager<Role> roleRepository, ILogger<UserManager> logger)
         {
             _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
@@ -89,6 +90,5 @@ namespace UsersProject.Logic.Managers
                 throw new ApplicationException("An error occurred while retrieving roles.", ex);
             }
         }
-
     }
 }

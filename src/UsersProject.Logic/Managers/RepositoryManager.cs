@@ -1,7 +1,7 @@
-﻿using UsersProject.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using UsersProject.Data.Contexts;
 using UsersProject.Logic.Interfaces;
 
 namespace UsersProject.Logic.Managers

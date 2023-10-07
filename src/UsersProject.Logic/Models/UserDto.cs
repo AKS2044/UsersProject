@@ -3,7 +3,7 @@
     /// <summary>
     /// User model.
     /// </summary>
-    public class UserDto 
+    public class UserDto
     {
         /// <summary>
         /// User Identification.

@@ -1,6 +1,6 @@
-﻿using UsersProject.WebApi.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using UsersProject.WebApi.Models;
 
 namespace UsersProject.WebApi.Attributes
 {
@@ -13,7 +13,6 @@ namespace UsersProject.WebApi.Attributes
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var user = context.HttpContext.Items["User"] as UserModel;
-
 
             if (user is null)
             {

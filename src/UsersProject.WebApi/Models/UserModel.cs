@@ -1,5 +1,4 @@
-﻿using UsersProject.Data.Models;
-using UsersProject.Logic.Models;
+﻿using UsersProject.Logic.Models;
 
 namespace UsersProject.WebApi.Models
 {

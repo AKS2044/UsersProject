@@ -16,9 +16,9 @@ namespace UsersProject.Logic.Managers
         private readonly ILogger _logger;
 
         public UserManager(
-            IRepositoryManager<User> userRepository, 
-            IRepositoryManager<Role> roleRepository, 
-            IRepositoryManager<UserRole> userRoleRepository, 
+            IRepositoryManager<User> userRepository,
+            IRepositoryManager<Role> roleRepository,
+            IRepositoryManager<UserRole> userRoleRepository,
             ILogger<UserManager> logger)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
@@ -152,10 +152,9 @@ namespace UsersProject.Logic.Managers
             {
                 var query = _userRepository.GetAll();
                 var userRole = await _userRoleRepository.GetAll().ToListAsync();
-                
 
                 int size = query.Count();
-                
+
                 if (!string.IsNullOrEmpty(filterName))
                 {
                     query = query.Where(u => u.Name.Contains(filterName));
@@ -195,20 +194,25 @@ namespace UsersProject.Logic.Managers
                     case "id":
                         query = isAscending ? query.OrderBy(u => u.Id) : query.OrderByDescending(u => u.Id);
                         break;
+
                     case "name":
                         query = isAscending ? query.OrderBy(u => u.Name) : query.OrderByDescending(u => u.Name);
                         break;
+
                     case "email":
                         query = isAscending ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
                         break;
+
                     case "age":
                         query = isAscending ? query.OrderBy(u => u.Age) : query.OrderByDescending(u => u.Age);
                         break;
+
                     case "role":
                         query = isAscending
                             ? query.OrderBy(u => u.UserRoles.Select(ur => ur.Role.UserRole).FirstOrDefault())
                             : query.OrderByDescending(u => u.UserRoles.Select(ur => ur.Role.UserRole).FirstOrDefault());
                         break;
+
                     default:
                         query = isAscending ? query.OrderBy(u => u.Id) : query.OrderByDescending(u => u.Id);
                         break;

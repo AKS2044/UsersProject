@@ -7,7 +7,7 @@ namespace UsersProject.Data.Contexts
     /// <summary>
     /// Main application context
     /// </summary>
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext : DbContext
     {
         /// <summary>
         /// DbSet for Users.

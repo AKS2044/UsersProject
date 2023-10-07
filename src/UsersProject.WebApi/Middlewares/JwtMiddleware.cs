@@ -1,13 +1,11 @@
-﻿using UsersProject.WebApi.Models;
-using UsersProject.WebApi.Settings;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using UsersProject.Logic.Interfaces;
-using Serilog;
-using Microsoft.AspNetCore.Identity;
-using UsersProject.Data.Models;
+using UsersProject.WebApi.Models;
+using UsersProject.WebApi.Settings;
 
 namespace UsersProject.WebApi.Middlewares
 {
@@ -95,7 +93,7 @@ namespace UsersProject.WebApi.Middlewares
                     Log.Error("You can't parse userId to integer");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "An error occurred while processing JWT token.");
             }

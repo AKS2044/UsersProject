@@ -3,7 +3,7 @@
     /// <summary>
     /// User model.
     /// </summary>
-    public class User 
+    public class User
     {
         /// <summary>
         /// User Identification.

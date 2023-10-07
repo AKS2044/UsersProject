@@ -199,10 +199,10 @@ namespace UsersProject.WebApi.Controllers
             try
             {
                 var users = await _userManager.GetAllAsync(
-                    pageNumber, 
-                    pageSize, 
-                    sortColumn, 
-                    sortDirection, 
+                    pageNumber,
+                    pageSize,
+                    sortColumn,
+                    sortDirection,
                     filterName,
                     filterEmail,
                     filterAge,
@@ -218,7 +218,6 @@ namespace UsersProject.WebApi.Controllers
                 return StatusCode(500, $"An error occurred while fetching users data. Error: {ex}");
             }
         }
-
 
         /// <summary>
         /// User Update

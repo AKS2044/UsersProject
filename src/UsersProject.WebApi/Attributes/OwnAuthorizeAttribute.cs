@@ -1,6 +1,6 @@
-﻿using UsersProject.WebApi.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using UsersProject.WebApi.Models;
 
 namespace UsersProject.WebApi.Attributes
 {
@@ -19,7 +19,6 @@ namespace UsersProject.WebApi.Attributes
                 // not logged in
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             }
-
         }
     }
 }
