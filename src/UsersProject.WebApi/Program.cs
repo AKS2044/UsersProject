@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using System.Reflection;
 using UsersProject.Data.Contexts;
 using UsersProject.Logic.Interfaces;
 using UsersProject.Logic.Managers;
@@ -10,13 +11,13 @@ using UsersProject.Logic.Services;
 using UsersProject.WebApi.Middlewares;
 using UsersProject.WebApi.Settings;
 
-//Log.Logger = new LoggerConfiguration()
-//            .MinimumLevel.Information()
-//            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-//            .Enrich.FromLogContext()
-//            .WriteTo.Console()
-//            .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
-//            .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,10 @@ var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options => options.LoginPath = "/account/login");
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/account/login";
+        });
 
 builder.Services.AddScoped(typeof(IRepositoryManager<>), typeof(RepositoryManager<>));
 builder.Services.AddScoped<IUserManager, UserManager>();
@@ -45,6 +49,10 @@ builder.Services.AddSwaggerGen(config =>
         Description = "User API",
         Contact = new OpenApiContact() { }
     });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    config.IncludeXmlComments(xmlPath);
 
     var securitySchema = new OpenApiSecurityScheme
     {

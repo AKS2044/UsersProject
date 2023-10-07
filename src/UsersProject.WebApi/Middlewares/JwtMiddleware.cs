@@ -77,7 +77,7 @@ namespace UsersProject.WebApi.Middlewares
                 {
                     if (userManager != null)
                     {
-                        var user = await userManager.FindByIdAsync(id);
+                        var user = await userManager.FindUserByIdAsync(id);
                         var role = await userManager.GetUserRolesByIdAsync(id);
                         var userModel = new UserModel
                         {

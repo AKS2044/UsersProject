@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Serilog;
+using System.Net.Mime;
 using UsersProject.Logic.Interfaces;
 using UsersProject.Logic.Models;
 
 namespace UsersProject.WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ApiController]
     public class RoleController : ControllerBase
     {
@@ -21,7 +23,13 @@ namespace UsersProject.WebApi.Controllers
             _appEnvironment = appEnvironment ?? throw new ArgumentNullException(nameof(appEnvironment));
         }
 
+        /// <summary>
+        /// Create role
+        /// </summary>
+        /// <param name="roleName">Role name</param>
         [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateAsync(string roleName)
         {
             try
@@ -40,38 +48,55 @@ namespace UsersProject.WebApi.Controllers
             catch (Exception error)
             {
                 Log.Error(error, $"{roleName} already exists in the database.");
-                return BadRequest($"{roleName} already exists in the database.");
+                return StatusCode(400, $"{roleName} already exists in the database.");
             }
         }
 
+        /// <summary>
+        /// Return all roles
+        /// </summary>
+        /// <returns>Roles data</returns>
         [HttpGet("getAll")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAllRolesAsync()
         {
             try
             {
                 var roles = await _roleManager.GetAllAsync();
 
+                Log.Information("Role has been successfully getting.");
+
                 return Ok(roles);
             }
-            catch (Exception error)
+            catch (Exception ex)
             {
-                return BadRequest(error);
+                Log.Error(ex, $"Couldn't get roles. Error: {ex}");
+                return StatusCode(400, $"Couldn't get roles. Error: {ex}");
             }
         }
 
+        /// <summary>
+        /// Delete role by id
+        /// </summary>
+        /// <param name="id">Role Id</param>
         [HttpDelete("delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteRoleAsync(int id)
         {
             try
             {
                 await _roleManager.DeleteAsync(id);
 
+                Log.Information("Role {id} has been successfully deleting.", id);
+
                 return Ok();
             }
-            catch (Exception error)
+            catch (Exception ex)
             {
-                Log.Error(error, "An error occurred while deleting a role.");
-                return BadRequest("An error occurred while deleting a role.");
+                Log.Error(ex, "An error occurred while deleting a role.");
+                return StatusCode(400, $"An error occurred while deleting a role. Error: {ex}");
             }
         }
 

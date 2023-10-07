@@ -14,7 +14,12 @@ namespace UsersProject.Logic.Managers
         private readonly IRepositoryManager<Role> _roleRepository;
         private readonly IRepositoryManager<UserRole> _userRoleRepository;
         private readonly ILogger _logger;
-        public UserManager(IRepositoryManager<User> userRepository, IRepositoryManager<Role> roleRepository, IRepositoryManager<UserRole> userRoleRepository,ILogger<UserManager> logger)
+
+        public UserManager(
+            IRepositoryManager<User> userRepository, 
+            IRepositoryManager<Role> roleRepository, 
+            IRepositoryManager<UserRole> userRoleRepository, 
+            ILogger<UserManager> logger)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _roleRepository = roleRepository ?? throw new ArgumentNullException(nameof(roleRepository));
@@ -103,7 +108,8 @@ namespace UsersProject.Logic.Managers
                 throw;
             }
         }
-        public async Task<UserDto> FindByIdAsync(int id)
+
+        public async Task<UserDto> FindUserByIdAsync(int id)
         {
             try
             {
@@ -127,21 +133,97 @@ namespace UsersProject.Logic.Managers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving user by ID {UserId}. Error: {ErrorMessage}", id, ex.Message);
+                _logger.LogError(ex, "An error occurred while retrieving user by ID {id}. Error: {ErrorMessage}", id);
                 throw;
             }
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllAsync()
+        public async Task<IEnumerable<UserDto>> GetAllAsync(
+            int pageNumber,
+            int pageSize,
+            string sortColumn,
+            string sortDirection,
+            string? filterName,
+            string? filterEmail,
+            string? filterAge,
+            string? filterRole)
         {
             try
             {
-                var users = await _userRepository.GetAll().Select(u => new UserDto
+                var query = _userRepository.GetAll();
+                var userRole = await _userRoleRepository.GetAll().ToListAsync();
+                
+
+                int size = query.Count();
+                
+                if (!string.IsNullOrEmpty(filterName))
+                {
+                    query = query.Where(u => u.Name.Contains(filterName));
+                }
+
+                if (!string.IsNullOrEmpty(filterEmail))
+                {
+                    query = query.Where(u => u.Email.Contains(filterEmail));
+                }
+
+                if (!string.IsNullOrEmpty(filterAge))
+                {
+                    if (int.TryParse(filterAge, out int age))
+                    {
+                        query = query.Where(u => u.Age == age);
+                    }
+                    else
+                    {
+                        return Enumerable.Empty<UserDto>();
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(filterRole))
+                {
+                    query = query.Where(u => u.UserRoles.Any(ur => ur.Role.UserRole == filterRole));
+                }
+
+                if (size <= pageSize)
+                {
+                    pageNumber = 1;
+                }
+
+                bool isAscending = sortDirection.Equals("asc", StringComparison.OrdinalIgnoreCase);
+
+                switch (sortColumn.ToLower())
+                {
+                    case "id":
+                        query = isAscending ? query.OrderBy(u => u.Id) : query.OrderByDescending(u => u.Id);
+                        break;
+                    case "name":
+                        query = isAscending ? query.OrderBy(u => u.Name) : query.OrderByDescending(u => u.Name);
+                        break;
+                    case "email":
+                        query = isAscending ? query.OrderBy(u => u.Email) : query.OrderByDescending(u => u.Email);
+                        break;
+                    case "age":
+                        query = isAscending ? query.OrderBy(u => u.Age) : query.OrderByDescending(u => u.Age);
+                        break;
+                    case "role":
+                        query = isAscending
+                            ? query.OrderBy(u => u.UserRoles.Select(ur => ur.Role.UserRole).FirstOrDefault())
+                            : query.OrderByDescending(u => u.UserRoles.Select(ur => ur.Role.UserRole).FirstOrDefault());
+                        break;
+                    default:
+                        query = isAscending ? query.OrderBy(u => u.Id) : query.OrderByDescending(u => u.Id);
+                        break;
+                }
+
+                int skip = (pageNumber - 1) * pageSize;
+
+                query = query.Skip(skip).Take(pageSize);
+
+                var users = await query.Select(u => new UserDto
                 {
                     Id = u.Id,
                     Name = u.Name,
                     Email = u.Email,
-                    Age = u.Age,
+                    Age = u.Age
                 }).ToListAsync();
 
                 return users;
@@ -150,6 +232,113 @@ namespace UsersProject.Logic.Managers
             {
                 _logger.LogError(ex, "An error occurred while retrieving users from the database.");
                 throw new InvalidOperationException("Unable to retrieve users from the database.");
+            }
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            try
+            {
+                var user = await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Id == id);
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"User with ID {id} not found.");
+                    throw new NotFoundException($"User with ID {id} not found.");
+                }
+
+                var userRoles = await _userRoleRepository.GetAll().Where(ur => ur.UserId == user.Id).ToListAsync();
+
+                _userRoleRepository.DeleteRange(userRoles);
+                await _userRoleRepository.SaveChangesAsync();
+
+                _userRepository.Delete(user);
+                await _userRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving user by ID {id}.", id);
+                throw;
+            }
+        }
+
+        public async Task UpdateAsync(UserDto userDto)
+        {
+            try
+            {
+                var user = await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Id == userDto.Id);
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"User with ID {userDto.Id} not found.");
+                    throw new NotFoundException($"User with ID {userDto.Id} not found.");
+                }
+
+                bool isUpdated = false;
+
+                if (userDto.Name != user.Name)
+                {
+                    user.Name = userDto.Name;
+                    isUpdated = true;
+                }
+
+                if (userDto.Email != user.Email)
+                {
+                    user.Email = userDto.Email;
+                    isUpdated = true;
+                }
+
+                if (userDto.Age != user.Age)
+                {
+                    user.Age = userDto.Age;
+                    isUpdated = true;
+                }
+
+                if (isUpdated)
+                {
+                    _userRepository.Update(user);
+                    await _userRepository.SaveChangesAsync();
+                    _logger.LogInformation($"User with ID {userDto.Id} has been updated.");
+                }
+                else
+                {
+                    _logger.LogInformation($"No changes detected for user with ID {userDto.Id}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating user information {userDto}.", userDto);
+                throw;
+            }
+        }
+
+        public async Task SetRoleAsync(int id, string roleName)
+        {
+            try
+            {
+                var user = await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Id == id);
+                var role = await _roleRepository.GetAll().FirstOrDefaultAsync(r => r.UserRole == roleName);
+
+                if (user == null || role == null)
+                {
+                    _logger.LogWarning($"User or role not found.");
+                    throw new NotFoundException($"User or role not found.");
+                }
+
+                var userRole = new UserRole()
+                {
+                    UserId = user.Id,
+                    RoleId = role.Id
+                };
+
+                _logger.LogInformation("New role successfully added for user.", user);
+                await _userRoleRepository.CreateAsync(userRole);
+                await _userRoleRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "User{id} or role{roleName} not found. Error: {ErrorMessage}", id);
+                throw;
             }
         }
     }

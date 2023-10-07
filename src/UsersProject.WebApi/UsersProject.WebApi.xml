@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UsersProject.WebApi</name>
+    </assembly>
+    <members>
+        <member name="T:UsersProject.WebApi.Attributes.OwnAuthorizeAdminAttribute">
+            <summary>
+            Own authorize attribute.
+            </summary>
+        </member>
+        <member name="T:UsersProject.WebApi.Attributes.OwnAuthorizeAttribute">
+            <summary>
+            Own authorize attribute.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Requests.UserCreateRequest.Email">
+            <summary>
+            User Email.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Requests.UserCreateRequest.Name">
+            <summary>
+            User Name.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Requests.UserCreateRequest.Age">
+            <summary>
+            User Age.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Requests.UserUpdateRequest.Email">
+            <summary>
+            User Email.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Requests.UserUpdateRequest.Name">
+            <summary>
+            User Name.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Requests.UserUpdateRequest.Age">
+            <summary>
+            User Age.
+            </summary>
+        </member>
+        <member name="T:UsersProject.WebApi.Contracts.Responses.AuthenticateResponse">
+            <summary>
+            User authenticate response.
+            </summary>
+        </member>
+        <member name="M:UsersProject.WebApi.Contracts.Responses.AuthenticateResponse.#ctor(UsersProject.Data.Models.User,System.String,System.Collections.Generic.IEnumerable{UsersProject.Logic.Models.RoleDto})">
+            <summary>
+            Constructor with params.
+            </summary>
+            <param name="user">User database model.</param>
+            <param name="token">Jwt token.</param>
+        </member>
+        <member name="T:UsersProject.WebApi.Contracts.Responses.ErrorResponse`1">
+            <summary>
+            Error response.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Responses.ErrorResponse`1.Message">
+            <summary>
+            Message.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Responses.ErrorResponse`1.Errors">
+            <summary>
+            Errors.
+            </summary>
+        </member>
+        <member name="T:UsersProject.WebApi.Contracts.Responses.UserResponse">
+            <summary>
+            User response model
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Responses.UserResponse.Id">
+            <summary>
+            User Identification.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Responses.UserResponse.Name">
+            <summary>
+            User name.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Responses.UserResponse.Age">
+            <summary>
+            User age.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Responses.UserResponse.Email">
+            <summary>
+            User Email.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Contracts.Responses.UserResponse.Roles">
+            <summary>
+            Roles.
+            </summary>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.RoleController.CreateAsync(System.String)">
+            <summary>
+            Create role
+            </summary>
+            <param name="roleName">Role name</param>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.RoleController.GetAllRolesAsync">
+            <summary>
+            Return all roles
+            </summary>
+            <returns>Roles data</returns>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.RoleController.DeleteRoleAsync(System.Int32)">
+            <summary>
+            Delete role by id
+            </summary>
+            <param name="id">Role Id</param>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.UserController.CreateAsync(UsersProject.WebApi.Contracts.Requests.UserCreateRequest)">
+            <summary>
+            Create user
+            </summary>
+            <param name="request">User request model</param>
+            <returns>User data</returns>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.UserController.DeleteAsync(System.Int32)">
+            <summary>
+            Delete user by ID
+            </summary>
+            <param name="id">User Id</param>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.UserController.GetUserByIdAsync(System.Int32)">
+            <summary>
+            Get user by ID
+            </summary>
+            <param name="id">User Id</param>
+            <returns>User data</returns>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.UserController.AddRoleForUserAsync(System.Int32,System.String)">
+            <summary>
+            Add role for user
+            </summary>
+            <param name="id">User Id</param>
+            <param name="roleName">Role name. You can add next names: User, Admin, Support, SuperAdmin</param>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.UserController.GetAllUsersAsync(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Get all users with pagination, sorting, and filtering options
+            </summary>
+            <param name="pageNumber">Page number (starting from 1)</param>
+            <param name="pageSize">Number of users per page</param>
+            <param name="sortColumn">Name of the column to sort by</param>
+            <param name="sortDirection">Sorting direction (asc or desc)</param>
+            <param name="filterName">Filter name to apply to user data</param>
+            <param name="filterEmail">Filter email to apply to user data</param>
+            <param name="filterAge">Filter age to apply to user data</param>
+            <param name="filterRole">Filter role to apply to user data</param>
+            <returns>Paginated and filtered user data</returns>
+        </member>
+        <member name="M:UsersProject.WebApi.Controllers.UserController.UpdateAsync(System.Int32,UsersProject.WebApi.Contracts.Requests.UserUpdateRequest)">
+            <summary>
+            User Update
+            </summary>
+            <param name="id">User Id</param>
+            <param name="request">Кequest user model</param>
+            <returns>Updated user data</returns>
+        </member>
+        <member name="T:UsersProject.WebApi.Middlewares.JwtMiddleware">
+            <summary>
+            Jwt middleware.
+            </summary>
+        </member>
+        <member name="M:UsersProject.WebApi.Middlewares.JwtMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Options.IOptions{UsersProject.WebApi.Settings.AppSettings},Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)">
+            <summary>
+            Constructor with params.
+            </summary>
+            <param name="next">Next request delegate.</param>
+            <param name="appSettings">App settings.</param>
+            <param name="serviceScopeFactory">Service scope factory.</param>
+        </member>
+        <member name="T:UsersProject.WebApi.Models.UserModel">
+            <summary>
+            User model.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Models.UserModel.Id">
+            <summary>
+            User Identification.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Models.UserModel.Name">
+            <summary>
+            User name.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Models.UserModel.Age">
+            <summary>
+            User age.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Models.UserModel.Email">
+            <summary>
+            User Email.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Models.UserModel.Token">
+            <summary>
+            User token.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Models.UserModel.Roles">
+            <summary>
+            Roles.
+            </summary>
+        </member>
+        <member name="T:UsersProject.WebApi.Settings.AppSettings">
+            <summary>
+            App settings.
+            </summary>
+        </member>
+        <member name="P:UsersProject.WebApi.Settings.AppSettings.Secret">
+            <summary>
+            Secret key for Jwt generation.
+            </summary>
+        </member>
+    </members>
+</doc>
